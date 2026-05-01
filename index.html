@@ -1,0 +1,602 @@
+Berikut kode HTML untuk web daftar harga dan auto order ForceCrash. Anda bisa menyimpannya sebagai file .html.
+
+```html
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>ForceCrash Auto Order | Script & Panel</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: radial-gradient(circle at 10% 20%, #0a0f1e, #03060c);
+            font-family: 'Poppins', 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+            color: #eef5ff;
+            padding: 1.5rem 1rem 3rem;
+        }
+
+        /* custom scroll */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #11161f;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ff4d6d;
+            border-radius: 10px;
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .hero {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .hero h1 {
+            font-size: 2.4rem;
+            background: linear-gradient(135deg, #FFB347, #FF6B6B, #FF3B6F);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(255, 60, 100, 0.3);
+            letter-spacing: 1px;
+        }
+        .hero p {
+            color: #9ba9c9;
+            margin-top: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        /* grid harga */
+        .price-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.3rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+        }
+
+        .card-category {
+            background: rgba(15, 25, 45, 0.75);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            padding: 1.2rem 1rem;
+            border: 1px solid rgba(255, 100, 150, 0.3);
+            flex: 1;
+            min-width: 200px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .card-category:hover {
+            transform: translateY(-5px);
+            border-color: #ff4d6d;
+            box-shadow: 0 12px 28px rgba(255, 70, 100, 0.2);
+        }
+        .card-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 2px dashed #ff6b6b;
+            display: inline-block;
+            width: 100%;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.7rem 0;
+            font-size: 1rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 20px;
+            background: rgba(0,0,0,0.3);
+        }
+        .price-row span:first-child {
+            font-weight: 500;
+            color: #f0c0c0;
+        }
+        .price-row span:last-child {
+            font-weight: bold;
+            color: #ffe484;
+        }
+        .badge-permanent {
+            background: #ff4d6d20;
+            border-left: 3px solid #ff4d6d;
+        }
+
+        /* daftar script & panel terpisah */
+        .section-title {
+            font-size: 1.8rem;
+            margin: 2rem 0 1rem;
+            text-align: center;
+            background: linear-gradient(120deg, #ffe0b5, #ffae70);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .double-col {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .list-box {
+            background: #0b111eb3;
+            backdrop-filter: blur(4px);
+            border-radius: 1.8rem;
+            padding: 1.5rem;
+            flex: 1;
+            border: 1px solid #2a3348;
+        }
+        .list-box h3 {
+            font-size: 1.7rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 5px solid #ff7b89;
+            padding-left: 1rem;
+        }
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0.5rem;
+            border-bottom: 1px solid #1f293d;
+            font-size: 0.95rem;
+        }
+        .menu-price {
+            font-weight: bold;
+            color: #ffd966;
+        }
+
+        /* form order */
+        .order-card {
+            background: #0c1322e6;
+            border-radius: 2rem;
+            padding: 1.8rem;
+            margin-top: 2rem;
+            border: 1px solid #ff7b6e;
+            backdrop-filter: blur(12px);
+        }
+        .order-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .form-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.3rem;
+            align-items: center;
+        }
+        .form-group label {
+            min-width: 120px;
+            font-weight: 600;
+        }
+        select, input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            background: #010a14;
+            border: 1px solid #31486c;
+            border-radius: 2rem;
+            color: white;
+            font-family: inherit;
+            outline: none;
+        }
+        select:focus, input:focus {
+            border-color: #ff7080;
+        }
+        .total-price {
+            background: #00000070;
+            padding: 0.8rem;
+            border-radius: 2rem;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 1rem 0;
+        }
+        .btn-order {
+            background: linear-gradient(95deg, #ff416c, #ff4b2b);
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 3rem;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 5px 15px rgba(255, 60, 60, 0.4);
+        }
+        .btn-order:hover {
+            transform: scale(0.98);
+            background: linear-gradient(95deg, #ff2e5e, #ff3a1f);
+        }
+        .payment-info {
+            background: #02111f;
+            border-radius: 1.5rem;
+            padding: 1rem;
+            margin-top: 1.5rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        .payment-info span {
+            color: #ffb347;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+        hr {
+            border-color: #ff6b6b30;
+            margin: 0.8rem 0;
+        }
+        .footer-note {
+            text-align: center;
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: #6883af;
+        }
+        @media (max-width: 650px) {
+            .price-row { font-size: 0.85rem; }
+            .card-title { font-size: 1.3rem; }
+            .hero h1 { font-size: 1.8rem; }
+        }
+        .btn-copy {
+            background: #2c3e66;
+            border: none;
+            border-radius: 20px;
+            padding: 5px 12px;
+            margin-left: 10px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.7rem;
+        }
+        .success-toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: #1f8b4c;
+            padding: 10px 20px;
+            border-radius: 40px;
+            z-index: 999;
+            font-size: 0.85rem;
+            box-shadow: 0 4px 12px black;
+            transition: 0.2s;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="hero">
+        <h1>✦ FORCECRASH AUTO ORDER ✦</h1>
+        <p>Premium Script • Panel Pterodactyl • Akses Private Server</p>
+    </div>
+
+    <!-- LIST HARGA UTAMA (Perhari & Permanen) -->
+    <div class="price-grid">
+        <!-- PERHARI -->
+        <div class="card-category">
+            <div class="card-title">📅 PERHARI</div>
+            <div class="price-row"><span>1 Hari</span><span>1.000</span></div>
+            <div class="price-row"><span>2 Hari</span><span>2.000</span></div>
+            <div class="price-row"><span>3 Hari</span><span>3.000</span></div>
+            <div class="price-row"><span>4 Hari</span><span>4.000</span></div>
+            <div class="price-row"><span>5 Hari</span><span>5.000</span></div>
+            <div class="price-row" style="color:#ffad86; font-size:0.8rem;"><span>⚠️ Batas maksimal 5 hari</span><span></span></div>
+        </div>
+        <!-- MEMBER / RESELLER / PARTNER dll -->
+        <div class="card-category">
+            <div class="card-title">👥 MEMBER</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>25.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">📦 RESELLER</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>40.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">🤝 PARTNER</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>55.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">🛡️ MODERATOR</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>65.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">👑 OWNER</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>85.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">🎖️ TK</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>95.000</span></div>
+        </div>
+        <div class="card-category">
+            <div class="card-title">🌟 ASIS</div>
+            <div class="price-row badge-permanent"><span>PERMANENT</span><span>130.000</span></div>
+        </div>
+    </div>
+
+    <!-- BONUS + PRICELIST SCIRPT dan PANEL -->
+    <div class="double-col">
+        <div class="list-box">
+            <h3>✨ BONUS + FREE SC FORCECRASH</h3>
+            <div style="margin-bottom: 0.8rem; background:#2a1a2e; border-radius: 20px; padding: 0.5rem 1rem;">🎁 FREE SC ForcCrash (NEW RILIS X-ForcCrash SCIPRT)</div>
+            <div class="menu-item"><span>✧ NO UPDATE</span><span class="menu-price">10.000</span></div>
+            <div class="menu-item"><span>✧ FULL UP</span><span class="menu-price">15.000</span></div>
+            <div class="menu-item"><span>✧ RESELLER</span><span class="menu-price">25.000</span></div>
+            <div class="menu-item"><span>✧ PARTNER</span><span class="menu-price">35.000</span></div>
+            <div class="menu-item"><span>✧ MODS</span><span class="menu-price">50.000</span></div>
+            <div class="menu-item"><span>✧ OWNER</span><span class="menu-price">75.000</span></div>
+            <div class="menu-item"><span>✧ TK VVIP</span><span class="menu-price">100.000</span></div>
+            <div class="menu-item"><span>✧ ASISTEN</span><span class="menu-price">125.000</span></div>
+        </div>
+        <div class="list-box">
+            <h3>🖥️ PTERODACTYL PANEL PRIVAT</h3>
+            <div style="background:#00000060; border-radius: 1rem; padding: 0.5rem; margin-bottom: 1rem;">✨ HANZZ DEV x RIZZ DEV ❤️ — Garansi Panel | Server Fast & Stabil | Full Private Server</div>
+            <div class="menu-item"><span>RESELLER PANEL</span><span class="menu-price">5.000</span></div>
+            <div class="menu-item"><span>ADMIN PANEL</span><span class="menu-price">10.000</span></div>
+            <div class="menu-item"><span>PARTNER PANEL</span><span class="menu-price">15.000</span></div>
+            <div class="menu-item"><span>OWNER PANEL</span><span class="menu-price">20.000</span></div>
+            <div class="menu-item"><span>TK PANEL</span><span class="menu-price">25.000</span></div>
+        </div>
+    </div>
+
+    <!-- AUTO ORDER SYSTEM -->
+    <div class="order-card">
+        <div class="order-title">⚡ AUTO ORDER ⚡</div>
+        <div class="form-group">
+            <label>📌 Pilih Kategori</label>
+            <select id="orderCat">
+                <option value="perhari">🕒 PERHARI (1-5 hari)</option>
+                <option value="member">👤 MEMBER PERMANENT (25k)</option>
+                <option value="reseller">📦 RESELLER PERMANENT (40k)</option>
+                <option value="partner">🤝 PARTNER PERMANENT (55k)</option>
+                <option value="moderator">🛡️ MODERATOR PERMANENT (65k)</option>
+                <option value="owner">👑 OWNER PERMANENT (85k)</option>
+                <option value="tk">🎖️ TK PERMANENT (95k)</option>
+                <option value="asis">🌟 ASIS PERMANENT (130k)</option>
+                <option value="sc_no_up">✧ SCRIPT NO UPDATE (10k)</option>
+                <option value="sc_full_up">✧ SCRIPT FULL UP (15k)</option>
+                <option value="sc_reseller">✧ SCRIPT RESELLER (25k)</option>
+                <option value="sc_patner">✧ SCRIPT PARTNER (35k)</option>
+                <option value="sc_mods">✧ SCRIPT MODS (50k)</option>
+                <option value="sc_owner">✧ SCRIPT OWNER (75k)</option>
+                <option value="sc_tk">✧ SCRIPT TK VVIP (100k)</option>
+                <option value="sc_asisten">✧ SCRIPT ASISTEN (125k)</option>
+                <option value="panel_reseller">🖥️ PANEL RESELLER (5k)</option>
+                <option value="panel_admin">🖥️ PANEL ADMIN (10k)</option>
+                <option value="panel_partner">🖥️ PANEL PARTNER (15k)</option>
+                <option value="panel_owner">🖥️ PANEL OWNER (20k)</option>
+                <option value="panel_tk">🖥️ PANEL TK (25k)</option>
+            </select>
+        </div>
+        <div class="form-group" id="hariGroup" style="display: none;">
+            <label>📆 Jumlah Hari (1-5)</label>
+            <input type="number" id="jumlahHari" min="1" max="5" value="1" step="1">
+        </div>
+        <div id="dynamicPriceDisplay" class="total-price">💰 Total: Rp 0</div>
+        <div class="form-group">
+            <label>📱 Nomor WhatsApp / ID Tele</label>
+            <input type="text" id="kontakPembeli" placeholder="Contoh: 085185754051 atau @username" required>
+        </div>
+        <button class="btn-order" id="orderBtn">✅ ORDER SEKARANG</button>
+
+        <div class="payment-info">
+            <div>💸 PEMBAYARAN VIA DANA ✅</div>
+            <div>📞 Nomor DANA: <span id="danaNumber">085185754051</span> 
+                <button class="btn-copy" id="copyDanaBtn">Salin</button>
+            </div>
+            <div>📢 SETELAH BAYAR, PM ADMIN TELEGRAM: <strong>@Rizzdec</strong> <button class="btn-copy" id="copyTeleBtn">Salin</button></div>
+            <hr>
+            <div style="font-size:0.8rem;">✅ Sertakan bukti transfer & konfirmasi order dengan copy pesan otomatis</div>
+        </div>
+    </div>
+    <div class="footer-note">
+        ⚡ ForceCrash Auto Order | Semua harga berlaku | Garansi layanan sesuai ketentuan
+    </div>
+</div>
+
+<script>
+    // mapping harga semua produk
+    const priceMap = {
+        perhari: { base: 1000, perDay: true },
+        member: 25000,
+        reseller: 40000,
+        partner: 55000,
+        moderator: 65000,
+        owner: 85000,
+        tk: 95000,
+        asis: 130000,
+        sc_no_up: 10000,
+        sc_full_up: 15000,
+        sc_reseller: 25000,
+        sc_patner: 35000,
+        sc_mods: 50000,
+        sc_owner: 75000,
+        sc_tk: 100000,
+        sc_asisten: 125000,
+        panel_reseller: 5000,
+        panel_admin: 10000,
+        panel_partner: 15000,
+        panel_owner: 20000,
+        panel_tk: 25000
+    };
+
+    // untuk label di ringkasan
+    const itemNames = {
+        perhari: "🕒 PERHARI",
+        member: "👤 MEMBER PERMANENT",
+        reseller: "📦 RESELLER PERMANENT",
+        partner: "🤝 PARTNER PERMANENT",
+        moderator: "🛡️ MODERATOR PERMANENT",
+        owner: "👑 OWNER PERMANENT",
+        tk: "🎖️ TK PERMANENT",
+        asis: "🌟 ASIS PERMANENT",
+        sc_no_up: "✧ SCRIPT NO UPDATE",
+        sc_full_up: "✧ SCRIPT FULL UP",
+        sc_reseller: "✧ SCRIPT RESELLER",
+        sc_patner: "✧ SCRIPT PARTNER",
+        sc_mods: "✧ SCRIPT MODS",
+        sc_owner: "✧ SCRIPT OWNER",
+        sc_tk: "✧ SCRIPT TK VVIP",
+        sc_asisten: "✧ SCRIPT ASISTEN",
+        panel_reseller: "🖥️ PANEL RESELLER",
+        panel_admin: "🖥️ PANEL ADMIN",
+        panel_partner: "🖥️ PANEL PARTNER",
+        panel_owner: "🖥️ PANEL OWNER",
+        panel_tk: "🖥️ PANEL TK"
+    };
+
+    const selectCat = document.getElementById('orderCat');
+    const hariGroup = document.getElementById('hariGroup');
+    const jumlahHariInput = document.getElementById('jumlahHari');
+    const dynamicPriceSpan = document.getElementById('dynamicPriceDisplay');
+    const kontakInput = document.getElementById('kontakPembeli');
+
+    function updatePrice() {
+        let selected = selectCat.value;
+        let total = 0;
+        if (selected === 'perhari') {
+            let hari = parseInt(jumlahHariInput.value);
+            if (isNaN(hari)) hari = 1;
+            if (hari < 1) hari = 1;
+            if (hari > 5) hari = 5;
+            jumlahHariInput.value = hari;
+            total = hari * 1000;
+        } else {
+            let price = priceMap[selected];
+            if (typeof price === 'number') total = price;
+            else total = 0;
+        }
+        dynamicPriceSpan.innerText = `💰 Total: Rp ${total.toLocaleString('id-ID')}`;
+        return total;
+    }
+
+    selectCat.addEventListener('change', function() {
+        if (selectCat.value === 'perhari') {
+            hariGroup.style.display = 'flex';
+            updatePrice();
+        } else {
+            hariGroup.style.display = 'none';
+            updatePrice();
+        }
+    });
+
+    jumlahHariInput.addEventListener('input', function() {
+        if (selectCat.value === 'perhari') {
+            let val = parseInt(jumlahHariInput.value);
+            if (val > 5) jumlahHariInput.value = 5;
+            if (val < 1 || isNaN(val)) jumlahHariInput.value = 1;
+            updatePrice();
+        }
+    });
+
+    function getDetailOrder() {
+        let selected = selectCat.value;
+        let productName = itemNames[selected] || "Produk ForceCrash";
+        let hargaTotal = 0;
+        let detail = "";
+
+        if (selected === 'perhari') {
+            let hari = parseInt(jumlahHariInput.value);
+            hargaTotal = hari * 1000;
+            detail = `${productName} — ${hari} Hari (max 5hari) = Rp ${hargaTotal.toLocaleString('id-ID')}`;
+        } else {
+            let priceValue = priceMap[selected];
+            if (typeof priceValue === 'number') hargaTotal = priceValue;
+            detail = `${productName} — Rp ${hargaTotal.toLocaleString('id-ID')}`;
+        }
+        return { productName, hargaTotal, detail };
+    }
+
+    // toast sederhana
+    function showToast(msg, isError = false) {
+        let toast = document.createElement('div');
+        toast.className = 'success-toast';
+        toast.style.background = isError ? '#a1222a' : '#1f8b4c';
+        toast.innerText = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 3500);
+    }
+
+    // copy handler
+    document.getElementById('copyDanaBtn').addEventListener('click', () => {
+        let danaText = document.getElementById('danaNumber').innerText;
+        navigator.clipboard.writeText(danaText);
+        showToast("✅ Nomor DANA disalin: " + danaText);
+    });
+    document.getElementById('copyTeleBtn').addEventListener('click', () => {
+        navigator.clipboard.writeText("@Rizzdec");
+        showToast("✅ Username Telegram disalin: @Rizzdec");
+    });
+
+    // AUTO ORDER -> generate pesan whatsapp / copy ke clipboard untuk PM Telegram
+    document.getElementById('orderBtn').addEventListener('click', () => {
+        let kontak = kontakInput.value.trim();
+        if (kontak === "") {
+            showToast("❌ Masukkan nomor WA / ID Telegram untuk konfirmasi order!", true);
+            return;
+        }
+
+        let { productName, hargaTotal, detail } = getDetailOrder();
+        if (hargaTotal <= 0) {
+            showToast("⚠️ Ada kesalahan harga, coba pilih ulang produk.", true);
+            return;
+        }
+
+        let tanggal = new Date().toLocaleString('id-ID');
+        let message = `🚀 *ORDER FORCECRASH* 🚀\n\n🛒 Produk: ${productName}\n📋 Detail: ${detail}\n💰 Total: Rp ${hargaTotal.toLocaleString('id-ID')}\n👤 Kontak Pembeli: ${kontak}\n🕒 Waktu: ${tanggal}\n\n💸 Pembayaran ke DANA: 085185754051\n📢 Setelah transfer, konfirmasi ke Admin Telegram: @Rizzdec\n\n*Catatan:* Sertakan bukti transfer & ID ini. Terima kasih!`;
+
+        // encode buat WhatsApp (bisa via link)
+        let waNumber = "6285185754051"; // nomor dana bisa dipakai untuk konfirmasi? tapi lebih baik admin terpisah, tetap gunakan default
+        let waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(message)}`;
+        
+        // Tampilkan konfirmasi popup pilihan
+        let userChoice = confirm(`Total Order: Rp ${hargaTotal.toLocaleString('id-ID')}\n\nProduk: ${productName}\nKontak: ${kontak}\n\nTekan OK untuk buka WhatsApp (kirim pesanan ke 085185754051) \nTekan Batal untuk salin pesan ke clipboard lalu PM Telegram.`);
+        
+        if (userChoice) {
+            window.open(waLink, '_blank');
+            showToast("📲 Membuka WhatsApp, kirim pesanan & lakukan pembayaran");
+        } else {
+            // salin ke clipboard
+            navigator.clipboard.writeText(message).then(() => {
+                showToast("📋 Pesanan disalin! Segera PM Telegram @Rizzdec dan kirim pesan + bukti bayar.");
+            }).catch(() => {
+                showToast("Gagal menyalin, silakan salin manual.", true);
+            });
+            // sebagai opsi kedua bisa buka Telegram
+            let confirmTele = confirm("Pesan sudah tersalin. Buka Telegram untuk PM @Rizzdec ?");
+            if(confirmTele) {
+                window.open("https://t.me/Rizzdec", '_blank');
+            }
+        }
+    });
+
+    // inisialisasi
+    updatePrice();
+    if (selectCat.value !== 'perhari') hariGroup.style.display = 'none';
+    
+    // validasi input hari tidak lebih dari 5
+    jumlahHariInput.addEventListener('blur', function() {
+        let val = parseInt(jumlahHariInput.value);
+        if (val > 5) jumlahHariInput.value = 5;
+        if (val < 1 || isNaN(val)) jumlahHariInput.value = 1;
+        if (selectCat.value === 'perhari') updatePrice();
+    });
+</script>
+</body>
+</html>
+```
